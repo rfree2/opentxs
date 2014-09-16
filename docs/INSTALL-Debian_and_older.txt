@@ -1,9 +1,7 @@
 #########################################################################
-#									#
-#									#
-#	##	INSTALL - Debian older tools (local install)	##	#
-#									#
-#									#
+#									                                                      #
+#         	##	INSTALL - Debian older tools (local install)	##	      # 
+#									                                                      #
 #########################################################################
 
 This are instructions for build, from scratch, on some linux-like platforms,
@@ -95,40 +93,36 @@ If compiling with clang - must pass full path to compiler
 --------------------------------------------------------------------------
 Selecting compiler for Open-Transactions (and other env options)
 
-On Linux/Unix, edit ~/.bashrc to use given compiler, by appending following lines, using e.g. this commands:
-	echo '# settings for Open-Transactions / and newcli' >> ~/.bashrc
-	echo 'export CC="ccache $HOME/.local/bin/clang" ; export CXX="ccache $HOME/.local/bin/clang++" ; export CPP="$HOME/.local/bin/clang -E"' >> ~/.bashrc
-	echo 'export PKG_CONFIG_PATH=$HOME/.local/lib/pkgconfig:$PKG_CONFIG_PATH' >> ~/.bashrc
-	source ~/.bashrc # re-read the settings to use them right now
+This settings work for all parts: opentxs, opentxs-srv, opentxs-cli
 
-OR instead - you can use CUSTOM CONFIGURATION (advanced topic) as explained below:
+On Linux/Unix, edit ~/.bashrc to use given compiler, by appending following lines:
 
-First, this setting configures the used computer:
+CCACHE_FIX=""
+CCACHE_FIX="-Qunused-arguments -Wno-deprecated-register" ; echo "WARNING: Version for old ccache, working around"; # on debian7
+export CC="ccache $HOME/.local/bin/clang $CCACHE_FIX" ; export CXX="ccache $HOME/.local/bin/clang++ $CCACHE_FIX" ; export CPP="$HOME/.local/bin/clang -E" 
+export PKG_CONFIG_PATH="$HOME/.local/lib/pkgconfig:$PKG_CONFIG_PATH" # local
+export LD_LIBRARY_PATH="$HOME/.local/lib:$HOME/.local/lib64" # local
+export CMAKE_PREFIX_PATH="$HOME/.local/" # local
+export MAKEFLAGS='-j 4' # depending on system!
+
+Skip the line CCACHE_FIX="-Q..." if you have modern ccache that understands clang flags fully.
+The lines marked "local" are for using local build (libs and software will be taken from/placed to ~/.local/)
+The -j option to makefile depends on computer, if you have enough RAM then try *1 or *2 number of CPU cores.
+
+DO NOT FORGET to also run this command:
+  source ~/.bashrc # re-read the settings to use them right now
+
+If you do not want to use ccache or local compiler you might consider instead replacing proper lines with either:
 	export CC="ccache $HOME/.local/bin/clang" ; export CXX="ccache $HOME/.local/bin/clang++" ; export CPP="$HOME/.local/bin/clang -E"
-
-if you want to use other compiler then change this lines, e.g. system-wide clang (with ccache) then use something like:
 	export CC="ccache clang" ; export CXX="ccache clang++" ; export CPP="clang -E"
-
-and system-wide without ccache should be something like:
 	export CC="clang" ; export CXX="clang++" ; export CPP="clang -E"
-
-on broken ccache (e.g. 3.1.7) if you get errors about unused command line option, then you need to add a flag to suppress them:
-
-Next, ALSO append this line AS WELL (in either case, this is other setting):
-	export PKG_CONFIG_PATH=$HOME/.local/lib/pkgconfig:$PKG_CONFIG_PATH
-
 
 Keep in mind that certain parts of Open-Transactiona, like otcli (othint) sub-project might require new enough compiler version;
 It might be possible to set compiler for sub-project separatelly see subproject doc (e.g. in otcli/ a.k.a. othint/).
 
-
 After applying this changes (if you build previously with other compiler choice) you must clear cmake cache using:
-	rm -rf CMakeCache.txt CMakeFiles/
-in the directory where you will be running cmake, and then run cmake (e.g. "cmake .") and then make.
-
-For above change to take effect you need to log out and again log in to user account
-OR instead just do this command:
-	source ~/.bashrc
+	rm -rf build/
+before trying again, and do not forget to reload ~/.bashrc as above.
 
 -----------------------------------
 2. Build and install Open Transactions:

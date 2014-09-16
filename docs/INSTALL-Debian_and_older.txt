@@ -6,6 +6,7 @@
 
 This are instructions for build, from scratch, on some linux-like platforms,
 where you need tools newer then provided. This includes Debian 7.
+This is testes and confirmed as of 2014.09.16 on current debian and opentxs.
 
 - use local compiler (if your system wide is not good enough)
 - no root: install all locally as given user (in ~/.local/)
@@ -21,7 +22,7 @@ See also: INSTALL-Debian_Ubuntu.txt
 
 1. Dependencies build and installation
 2. Open Transaction build
-3. Subprojects build
+3. Subprojects build (opentxs-srv, opentxs-cli aka otshell)
 (reserved)
 8. Run the software
 9. Run other software: MoneyChanger
@@ -113,9 +114,9 @@ DO NOT FORGET to also run this command:
   source ~/.bashrc # re-read the settings to use them right now
 
 If you do not want to use ccache or local compiler you might consider instead replacing proper lines with either:
-	export CC="ccache $HOME/.local/bin/clang" ; export CXX="ccache $HOME/.local/bin/clang++" ; export CPP="$HOME/.local/bin/clang -E"
-	export CC="ccache clang" ; export CXX="ccache clang++" ; export CPP="clang -E"
-	export CC="clang" ; export CXX="clang++" ; export CPP="clang -E"
+export CC="ccache $HOME/.local/bin/clang" ; export CXX="ccache $HOME/.local/bin/clang++" ; export CPP="$HOME/.local/bin/clang -E"
+export CC="ccache clang" ; export CXX="ccache clang++" ; export CPP="clang -E"
+export CC="clang" ; export CXX="clang++" ; export CPP="clang -E"
 
 Keep in mind that certain parts of Open-Transactiona, like otcli (othint) sub-project might require new enough compiler version;
 It might be possible to set compiler for sub-project separatelly see subproject doc (e.g. in otcli/ a.k.a. othint/).
@@ -129,12 +130,17 @@ before trying again, and do not forget to reload ~/.bashrc as above.
 
 	git@github.com:open-transactions/opentxs.git
 	cd opentxs
+	git submodule init && git submodule update # this step is needed to be run manually for some systems
 	mkdir -p build && cd build && cmake -D CMAKE_INSTALL_PREFIX=$HOME/.local/ -D FORCE_BUNDLED_ZMQ_LIB=ON .. && make install
 
 -----------------------------------
 3. Subprojects build
 
-Not used now, as otcli (otshell) is now moved to separated repository: https://github.com/rfree2/opentxs-cli
+opentxs-server build will be described in the documentation of that project. The process will be probably similar.
+
+opentxs-cli build will be described in the documentation of that project. That project, a.k.a otshell, the command line interface
+is now moved to https://github.com/rfree2/opentxs-cli (lead developer's version)
+and to repo at https://github.com/Open-Transactions/opentxs-cli (OT developer's version).
 
 -----------------------------------
 4. to 7. are reserved chapters

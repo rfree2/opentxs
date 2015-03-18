@@ -91,8 +91,12 @@ std::string formatTimestamp(time64_t tt)
     struct tm tm;
     time_t t = tt;
     char buf[255];
-
-    strftime(buf, sizeof(buf), "%FT%T", gmtime_r(&t, &tm));
+#if defined(_WIN32)
+	gmtime_s(&tm, &t);
+	strftime(buf, sizeof(buf), "%FT%T", &tm);
+#else
+	strftime(buf, sizeof(buf), "%FT%T", gmtime_r(&t, &tm));
+#endif
     return std::string(buf);
 }
 

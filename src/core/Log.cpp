@@ -838,7 +838,7 @@ void ot_terminate()
 //
 
 // static
-void OTLog::SetupSignalHandler()
+void Log::SetupSignalHandler()
 {
     static int32_t nCount = 0;
 
